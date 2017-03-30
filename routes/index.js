@@ -14,11 +14,17 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/getpassword', function(req, res) {
-    var pass = generatePassword();
+    var pass = [];
+    
+    for(var i=0; i<3; i++) {
+        pass.push(generatePassword());
+    }
+   
     var obj = {
             userId: user++,
             password: pass
         };
+        
     res.send(obj);
 });
 
@@ -40,8 +46,11 @@ readTextFile(ADJ_FILE).then(function(data) {
 	console.error('Err:'+err);
 });
 
-function logToFile(content) {
-    var str = '\n'+content.user+','+content.start+','+content.mid+','+content.end+','+content.status+','+content.entered+','+content.pass+',,';
+function logToFile(content) {    
+    var str = '\n'+content.user+','+
+        content.memduration+','+content.inputduration+','+
+        content.status+','+content.entered+','+
+        content.pass+','+content.account+','+content.order+',,';
     fs.appendFile(OUTPUT, str, function(err){
         if (err) {
             console.error('Err app: '+err);

@@ -7,15 +7,18 @@
         </head>
         
         <body>
-            <div>
-                <font size="40"><label id="passworddisplay"></label></font>
+            <div id="passwordmemory">
+                <font size="40"><label id="passworddisplayone"></label></font><br>
+                <font size="40"><label id="passworddisplaytwo"></label></font><br>
+                <font size="40"><label id="passworddisplaythree"></label></font><br>
             </div>
            
             <div id="login" style="display: none;"> 
+                <font size="40"><label id="passwordprompt"></label></font><br>
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password">
                 <div id="lower">
-                    <button onclick="submitPassword()">Submit</button>
+                    <button onclick="submitPassword()">Next</button>
                 </div>
             </div>
             <button id="togview" onclick="toggleView()">Ready</button>
@@ -23,15 +26,19 @@
         </body>
         
         <script>
-            var startMemory, endMemory;
-            var user, password;
+            var EMAIL_ID = 0, BANK_ID = 1, FB_ID = 2;
+            var startMemory, endMemory, startEnter;
+            var user, password = [], order = [EMAIL_ID,BANK_ID,FB_ID], numEntered = 0;
         
-            function toggleView() { 
-                endMemory = new Date();
+            function toggleView() {
+                endMemory = startEnter = new Date();
                 console.log('user: '+user+' - password: '+password);
-                $('#passworddisplay').hide();
+                $('#passwordmemory').hide();
                 $('#login').show();
                 $('#togview').hide();
+                
+                var text = getTextForPrompt(order[0]);
+                $('#passwordprompt').text(text);
             }
             
             function submitPassword() {
@@ -41,24 +48,48 @@
                 console.log(entered);
                 var req = {
                     user: user,
-                    start: startMemory.toISOString(),
-                    mid: endMemory.toISOString(),
-                    end: (new Date()).toISOString(),
-                    status: ''+((entered==password) ? 'success' : 'fail'),
+                    memduration: endMemory.getTime()-startMemory.getTime(),
+                    inputduration:(new Date()).getTime()-startEnter.getTime(),
+                    status: ''+((entered==password[order[numEntered]]) ? 'success' : 'fail'),
                     entered: entered,
-                    pass: password
+                    pass: password[order[numEntered]],
+                    account: getTextForPrompt(order[numEntered]),
+                    order: numEntered
                 }
                 
                 $.post('loginattempt', req, function(data) {
                     console.log(data);
                 });
                 
-                resetPage();
+                numEntered++;
+                
+                if (numEntered < 3) {
+                    var text = getTextForPrompt(order[numEntered]);
+                    $('#passwordprompt').text(text);
+                    startEnter = new Date();
+                }
+                else { 
+                    resetPage();
+                }
             }
             
             $(document).ready(function() {
                 resetPage();                
             });
+            
+            function getTextForPrompt(i) {
+                switch(i) {
+                    case EMAIL_ID:
+                        return 'Email';
+                    case BANK_ID:
+                        return 'Bank';
+                        break;
+                    case FB_ID:
+                        return 'Facebook';
+                    default:
+                        return 'error in switch';
+                }
+            }
             
             function resetPage() {
                 startMemory = new Date();
@@ -66,12 +97,25 @@
                 $.get('getpassword', function(data) {
                     user = data.userId;
                     password = data.password;
-                    $('#passworddisplay').text(password);
+                    $('#passworddisplayone').text('Email: '+password[EMAIL_ID]);
+                    $('#passworddisplaytwo').text('Bank: '+password[BANK_ID]);
+                    $('#passworddisplaythree').text('Facebook: '+password[FB_ID]);
                     
-                    $('#passworddisplay').show();
+                    $('#passwordmemory').show();
                     $('#login').hide();
                     $('#togview').show();
                 });
+                
+                var randA, randB, save;
+                
+                for (var i=0; i<5; i++) {    //Make 5 permutations of the order
+                    randA = Math.floor(Math.random()*3);
+                    while(randA == (randB = Math.floor(Math.random()*3)));
+                    
+                    save = order[randA];
+                    order[randA] = order[randB];
+                    order[randB] = save;
+                }
             }
         </script>
         

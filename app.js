@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
-var users = require('./routes/users');
 
 var ADJ_FILE = 'datasets/adjectives.txt', VERB_FILE = 'datasets/verbs.txt', NOUN_FILE = 'datasets/nouns.txt';
 var OUTPUT = 'datasets/output.txt';
