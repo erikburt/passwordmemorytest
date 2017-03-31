@@ -4,9 +4,8 @@ var router = express.Router();
 var fs = require('fs');
 var Promise = require('bluebird');
 
-var ADJ_FILE = './datasets/adjectives.txt', VERB_FILE = './datasets/verbs.txt', NOUN_FILE = './datasets/nouns.txt';
-var OUTPUT = './datasets/output.txt';
-var adj, verb, noun, user = 1000;
+var WORD_FILE = './datasets/words.txt', OUTPUT = './datasets/output.txt';
+var words, user = 1000;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -34,14 +33,8 @@ router.post('/loginattempt', function(req, res) {
 });
 
 
-readTextFile(ADJ_FILE).then(function(data) {
-	adj = data;
-	return readTextFile(VERB_FILE);
-}).then(function(data) {
-	verb = data;
-	return readTextFile(NOUN_FILE);
-}).then(function(data) {
-	noun = data;
+readTextFile(WORD_FILE).then(function(data) {
+	words = data;
 }).catch(function(err) {
 	console.error('Err:'+err);
 });
@@ -77,11 +70,10 @@ function readTextFile(filename) {
 }
 
 function generatePassword() { 
-    var aRand = Math.floor(Math.random() * (adj.length - 1));
-	var bRand = Math.floor(Math.random() * (verb.length - 1));
-	var cRand = Math.floor(Math.random() * (noun.length -1));
+    var aRand = Math.floor(Math.random() * (words.length - 1));
+	var bRand = Math.floor(Math.random() * (words.length - 1));
 	
-	return cap(adj[aRand])+cap(noun[cRand])+cap(verb[bRand]);
+	return cap(words[aRand])+cap(words[bRand]);
     
     function cap(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
