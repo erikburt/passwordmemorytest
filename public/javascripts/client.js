@@ -7,6 +7,9 @@ function nextPractice() {
     practiced++;
     var now = new Date();
     endMemory.push(now);
+    passwordmemory
+    
+    $('#passwordmemory').show();
     
     if (practiced == 1) {
         $('#passworddisplayone').hide();
@@ -86,11 +89,31 @@ function submitPassword() {
 
 $('#passwordtest').keyup(function() {
     var input = $('#passwordtest').val();
+    var correct = input == password[practiced];
+    var element;
     
-    if (input == password[practiced]) {
+    switch(practiced) {
+        case 0:
+            element = $('#passworddisplayone');
+            break;
+        case 1:
+            element = $('#passworddisplaytwo');
+            break;
+        case 2:
+            element = $('#passworddisplaythree');
+            break;
+        default:
+            console.log('error hiding label because of input');
+    }
+    
+    if (input == '') {
+        element.show();
+    }
+    else if(correct) {
         $('#togview').prop('disabled', false);
     }
     else {
+        element.hide();
         $('#togview').prop('disabled', true);
     }
 });
