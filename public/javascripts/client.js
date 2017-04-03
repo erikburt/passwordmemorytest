@@ -20,7 +20,7 @@ function nextPractice() {
     else if (practiced == 2) {
         $('#passworddisplaytwo').hide();
         $('#passworddisplaythree').show();
-        $('#passwordtest').val('');
+        $('#passwordtest').val('').focus();
         startMemory.push(now);
         $('#togview').prop('disabled', true);
     }
@@ -40,7 +40,7 @@ function submitPassword() {
     var entered = $('#password').val();
     var correct = (entered == password[ORDER[numEntered]]);
     var index = ORDER[numEntered];
-    $('#password').val('');
+    $('#password').val('').focus();
 
     var req = {
         user: user,
@@ -141,6 +141,7 @@ function resetPage() {
     attempted = 0;
     practiced = 0;
     numEntered = 0;
+    $('#passwordtest').focus();
 
     $.get('getpassword', function(data) {
         user = data.userId;
