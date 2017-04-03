@@ -1,16 +1,15 @@
 var EMAIL_ID = 0, BANK_ID = 1, FB_ID = 2;
 var startMemory = [], endMemory = [], startEnter;
-var user, password = [], order = [EMAIL_ID,BANK_ID,FB_ID], numEntered = 0;
+var user, password, ORDER = [EMAIL_ID,BANK_ID,FB_ID];
 var attempts = 0, practiced = 0;
 
 function nextPractice() {
     practiced++;
     var now = new Date();
     endMemory.push(now);
-    passwordmemory
-    
+
     $('#passwordmemory').show();
-    
+
     if (practiced == 1) {
         $('#passworddisplayone').hide();
         $('#passworddisplaytwo').show();
@@ -30,19 +29,19 @@ function nextPractice() {
         $('#passwordmemory').hide();
         $('#login').show();
         $('#togview').hide();
-        var text = getTextForPrompt(order[0]);
+        var text = getTextForPrompt(ORDER[0]);
         $('#passwordprompt').text(text);
         $('#togview').prop('disabled', true);
         startEnter = new Date();
-    }  
+    }
 }
 
 function submitPassword() {
     var entered = $('#password').val();
-    var correct = (entered == password[order[numEntered]]);
-    var index = order[numEntered];
+    var correct = (entered == password[ORDER[numEntered]]);
+    var index = ORDER[numEntered];
     $('#password').val('');
-    
+
     var req = {
         user: user,
         memduration: endMemory[index].getTime()-startMemory[index].getTime(),
@@ -51,39 +50,39 @@ function submitPassword() {
         entered: entered,
         pass: password[index],
         account: getTextForPrompt(index),
-        order: numEntered
+        ORDER: numEntered
     }
-    
+
     $.post('loginattempt', req, function(data) {
         console.log(data);
     });
-    
+
     attempted++;
-    
+
     if (correct) {
         alert('Correct!');
         nextPassword();
     }
     else {
-       alert('Incorrect! You entered '+entered+'. '+attempted+'/3 attempts used.');  
-        
+       alert('Incorrect! You entered '+entered+'. '+attempted+'/3 attempts used.');
+
         if (attempted >= 3) {
             nextPassword();
-        }       
+        }
     }
-    
+
     function nextPassword() {
         numEntered++;
-        
+
         if (numEntered < 3) {
-            var text = getTextForPrompt(order[numEntered]);
+            var text = getTextForPrompt(ORDER[numEntered]);
             $('#passwordprompt').text(text);
             startEnter = new Date();
             attempted = 0;
         }
         else {
             resetPage();
-        }     
+        }
     }
 }
 
@@ -91,7 +90,7 @@ $('#passwordtest').keyup(function() {
     var input = $('#passwordtest').val();
     var correct = input == password[practiced];
     var element;
-    
+
     switch(practiced) {
         case 0:
             element = $('#passworddisplayone');
@@ -105,7 +104,7 @@ $('#passwordtest').keyup(function() {
         default:
             console.log('error hiding label because of input');
     }
-    
+
     if (input == '') {
         element.show();
     }
@@ -117,9 +116,9 @@ $('#passwordtest').keyup(function() {
         $('#togview').prop('disabled', true);
     }
 });
-    
+
 $(document).ready(function() {
-    resetPage();                
+    resetPage();
 });
 
 function getTextForPrompt(i) {
@@ -137,36 +136,38 @@ function getTextForPrompt(i) {
 }
 
 function resetPage() {
+    endMemory = [];
     startMemory.push(new Date());
     attempted = 0;
     practiced = 0;
-    
+    numEntered = 0;
+
     $.get('getpassword', function(data) {
         user = data.userId;
         password = data.password;
         console.log(password);
         $('#passworddisplayone').text('Email: '+password[EMAIL_ID]);
         $('#passworddisplayone').show();
-        
+
         $('#passworddisplaytwo').text('Bank: '+password[BANK_ID]);
         $('#passworddisplaytwo').hide();
-        
+
         $('#passworddisplaythree').text('Facebook: '+password[FB_ID]);
         $('#passworddisplaythree').hide();
-        
+
         $('#passwordmemory').show();
         $('#login').hide();
         $('#togview').show();
     });
-    
+
     var randA, randB, save;
-    
-    for (var i=0; i<5; i++) {    //Make 5 permutations of the order
+
+    for (var i=0; i<5; i++) {    //Make 5 permutations of the ORDER
         randA = Math.floor(Math.random()*3);
         while(randA == (randB = Math.floor(Math.random()*3)));
-        
-        save = order[randA];
-        order[randA] = order[randB];
-        order[randB] = save;
+
+        save = ORDER[randA];
+        ORDER[randA] = ORDER[randB];
+        ORDER[randB] = save;
     }
 }

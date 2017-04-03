@@ -7,8 +7,6 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 
-var ADJ_FILE = 'datasets/adjectives.txt', VERB_FILE = 'datasets/verbs.txt', NOUN_FILE = 'datasets/nouns.txt';
-var OUTPUT = 'datasets/output.txt';
 var adj, verb, noun;
 
 var app = express();
@@ -44,6 +42,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500, {message: err.message, error: err});
 });
 
-app.listen(3000, function() {});
+app.listen(3000, function() { console.log("Listening on port 3000"); });
 
 module.exports = app;
