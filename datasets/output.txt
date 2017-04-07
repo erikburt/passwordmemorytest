@@ -1,1 +1,0 @@
-user id,mem duration,input duration,status,entered,password,account,order,,

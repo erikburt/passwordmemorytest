@@ -5,27 +5,29 @@
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
             <title>Login Page</title>
         </head>
-        
+
         <body>
-            <div id="passwordmemory">
-                <font size="40"><label id="passworddisplayone"></label></font>
-                <font size="40"><label id="passworddisplaytwo" style="display: none;"></label></font>
-                <font size="40"><label id="passworddisplaythree" style="display: none;"></label></font>
-                <br>
-                <label for="passwordtest">Password:</label>
-                <input id="passwordtest" name="passwordtest"><br><br><br>
-            </div>
-           
-            <div id="login" style="display: none;"> 
+            <form onsubmit="nextPractice(); return false;">
+              <div id="passwordmemory">
+                  <font size="40"><label id="passworddisplayone"></label></font>
+                  <font size="40"><label id="passworddisplaytwo" style="display: none;"></label></font>
+                  <font size="40"><label id="passworddisplaythree" style="display: none;"></label></font>
+                  <br>
+                  <label for="passwordtest">Password:</label>
+                  <input id="passwordtest" name="passwordtest"><br><br><br>
+              </div>
+              <input id="togview" type="submit" disabled value="Next" />
+            </form>
+
+            <form id="login" style="display: none;" onsubmit="submitPassword(); return false;">
                 <font size="40"><label id="passwordprompt"></label></font><br>
                 <label for="password">Password:</label>
                 <input id="password" name="password">
                 <div id="lower">
-                    <button onclick="submitPassword()">Next</button>
+                    <input type="submit" value="Next" />
                 </div>
-            </div>
-            <button id="togview" onclick="nextPractice()" disabled>Next</button>
-            
+            </form>
+
             <script src="javascripts/client.js"></script>
         </body>
     </html>
